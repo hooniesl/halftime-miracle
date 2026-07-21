@@ -36,6 +36,26 @@ body { background: var(--bg); color: var(--text); font-family: 'Pretendard', -ap
 .select-foot { margin-top: auto; font-size: 11px; color: var(--dim); text-align: center; line-height: 1.5; }
 .reality-note { font-size: 13px; color: var(--gold); background: rgba(244,162,97,.08); border: 1px solid rgba(244,162,97,.3); border-radius: 10px; padding: 12px; line-height: 1.55; }
 
+.badge.stake { color: var(--gold); border-color: rgba(244,162,97,.4); font-weight: 800; }
+
+/* 선발 명단 스카우팅 */
+.roster { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.roster-toggle { width: 100%; background: none; border: none; color: var(--text); font-family: inherit; font-size: 13px; font-weight: 700; padding: 12px; cursor: pointer; text-align: left; }
+.roster-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; }
+.roster-row { border-top: 1px solid var(--line); padding-top: 9px; display: flex; flex-direction: column; gap: 3px; }
+.roster-row.bench { background: rgba(244,162,97,.06); border: 1px solid rgba(244,162,97,.3); border-radius: 10px; padding: 9px; }
+.roster-head-line { font-size: 13.5px; }
+.roster-pos { color: var(--dim); font-size: 11px; margin: 0 4px; }
+.roster-trait { color: var(--gold); font-size: 11.5px; }
+.roster-strong { font-size: 12px; color: #7fd8cc; line-height: 1.45; }
+.roster-weak { font-size: 12px; color: #d4a373; line-height: 1.45; }
+
+/* 감독 인용 (리포트) */
+.quote-panel { border-color: rgba(244,162,97,.35); }
+.coach-quote { font-size: 13.5px; line-height: 1.65; color: var(--dim); font-style: italic; }
+.quote-answer { font-size: 14px; text-align: right; }
+.quote-answer b { color: var(--gold); font-size: 17px; }
+
 /* 인트로 */
 .timeline { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 .timeline-item { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; }

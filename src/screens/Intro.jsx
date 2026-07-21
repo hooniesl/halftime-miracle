@@ -20,6 +20,7 @@ export default function Intro({ sc, onNext }) {
         <span className="team them">{sc.enemyName}</span>
       </div>
       <div className="badge">{sc.id === 'korea' ? '2026 월드컵 A조 최종전 · 전반 종료' : '월드컵 16강 · 전반 종료'}</div>
+      {sc.stake && <div className="badge stake">⚡ {sc.stake}</div>}
 
       <div className="timeline">
         {half.slice(0, shown).map(e => (

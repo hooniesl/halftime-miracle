@@ -111,6 +111,8 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
         </div>
       </div>
 
+      <Roster sc={sc} />
+
       <div className="gauges">
         <Gauge label="공격" value={stats.atk} max={18} color="#e63946" />
         <Gauge label="수비" value={stats.def} max={12} color="#457b9d" />
@@ -159,6 +161,38 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
           {picked.length < 3 ? `카드를 ${3 - picked.length}장 더 고르세요` : '🔥 후반전 킥오프!'}
         </button>
       </div>
+    </div>
+  )
+}
+
+// 선발 명단 스카우팅 — 접이식 (축구팬용 디테일: 선수별 장단점)
+function Roster({ sc }) {
+  const [open, setOpen] = useState(false)
+  const hasDetail = sc.players.some(p => p.strong)
+  if (!hasDetail) return null
+  return (
+    <div className="roster">
+      <button className="roster-toggle" onClick={() => { play('click', 0.4); setOpen(o => !o) }}>
+        📋 선발 명단 스카우팅 {open ? '▲' : '▼'}
+      </button>
+      {open && (
+        <div className="roster-list fade-in">
+          {sc.players.map(p => (
+            <div key={p.id} className="roster-row">
+              <div className="roster-head-line"><b>{p.name}</b> <span className="roster-pos">{p.pos}</span> <span className="roster-trait">{p.trait}</span></div>
+              <div className="roster-strong">▲ {p.strong}</div>
+              <div className="roster-weak">▽ {p.weak}</div>
+            </div>
+          ))}
+          {sc.bench && (
+            <div className="roster-row bench">
+              <div className="roster-head-line"><b>⭐ {sc.bench.name}</b> <span className="roster-pos">{sc.bench.pos}</span> <span className="roster-trait">{sc.bench.trait}</span></div>
+              <div className="roster-strong">▲ {sc.bench.strong}</div>
+              <div className="roster-weak">▽ {sc.bench.weak}</div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

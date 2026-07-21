@@ -49,6 +49,13 @@ export default function Report({ result, sc, cards, history, onRetry, onSelect }
         </div>
       </div>
 
+      {sc.coachQuote && (
+        <div className="panel quote-panel">
+          <p className="coach-quote">{sc.coachQuote}</p>
+          <p className="quote-answer">— 당신의 대답: <b>{result.us} : {result.them}</b></p>
+        </div>
+      )}
+
       {history.length > 1 && (
         <div className="panel">
           <h3>🔁 나의 시도들</h3>
