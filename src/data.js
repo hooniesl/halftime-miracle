@@ -57,9 +57,26 @@ export const SCENARIOS = {
     // 엔진 중계 문구용 실명 매핑 (긍정 문구에만 사용 — 비하 금지 게이트)
     names: { SPD: '황희찬', SUB: '손흥민', TGT: '김민재', CAP: '김민재', GAM: '설영우', LW: '이태석', GK: '김승규', MAGIC: '이강인' },
     cardOverrides: {
-      supersub: { name: '손흥민 투입', icon: '⭐', desc: '벤치의 캡틴이 몸을 푼다. 2선에서 게임을 조립한다.', risk: '실제 그날엔 늦었다. 당신은?' },
-      gamble:   { desc: '설영우까지 올린다. 마지막 도박.', risk: '역습 한 방이면 끝장' },
+      gamble: { desc: '설영우까지 올린다. 마지막 도박.', risk: '역습 한 방이면 끝장' },
     },
+    removeCards: ['supersub'], // 일반 슈퍼서브 → 실명 교체 시스템으로 대체
+    extraCards: [
+      { id: 'sub_son', special: true, name: '교체: 손흥민 IN', icon: '⭐', atk: 3, def: 0, sta: 2,
+        desc: 'OUT 황희찬 → IN 손흥민. 2선에서 게임을 조립한다. 그날 실제 벤치 카드.',
+        risk: '실제 그날엔 하프타임에야 나왔다. 당신은?',
+        sub: { out: 'fw3', inName: '손흥민', inTrait: '캡틴 · 월드클래스 결정력' },
+        sceneGood: ['손흥민 투입! 등번호 7번이 들어서자 경기장 온도가 바뀐다', '손흥민이 2선에서 공을 잡는다 — 수비 세 명이 동시에 끌려나온다'] },
+      { id: 'sub_jaesung', special: true, name: '교체: 이재성 IN', icon: '🔁', atk: 1, def: 1, sta: 2,
+        desc: 'OUT 백승호 → IN 이재성. 살림꾼이 중원에 질서를 세운다. 그날 실제 벤치 카드.',
+        risk: '화려하진 않다. 그러나 끊기지 않는다',
+        sub: { out: 'mf2', inName: '이재성', inTrait: '살림꾼 · 공수 연결' },
+        sceneGood: ['이재성이 들어오자 끊기던 공수 연결이 매끄러워진다', '이재성의 헌신적인 압박 — 중원에서 다시 볼이 돌기 시작한다'] },
+      { id: 'intel', special: true, name: '상대 분석 리포트', icon: '📡', atk: 1, def: 2, sta: 0,
+        desc: '분석팀 요약 — 남아공은 낮은 블록으로 잠그고 마세코·모레미의 역습 한 방을 노린다. 득점 패턴: 좌측 모레미 크로스 → 마세코 마무리. 그 길목을 미리 차단한다.',
+        risk: '분석에 쓴 시간만큼 공격 준비는 줄어든다',
+        intel: true,
+        sceneGood: ['분석 그대로다 — 모레미의 크로스 길목을 미리 서서 끊어낸다', '벤치의 분석 보드대로 역습 경로가 차단된다'] },
+    ],
   },
 
   azurika: {

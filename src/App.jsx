@@ -3,7 +3,7 @@ import Intro from './screens/Intro.jsx'
 import LockerRoom from './screens/LockerRoom.jsx'
 import Playback from './screens/Playback.jsx'
 import Report from './screens/Report.jsx'
-import { simulate, CARDS, INTERVENTIONS } from './engine.js'
+import { simulate, cardsFor, INTERVENTIONS } from './engine.js'
 import { SCENARIOS, DEFAULT_SCENARIO } from './data.js'
 import { soundOn, toggleSound, play } from './sound.js'
 
@@ -14,7 +14,7 @@ function parseReplayHash() {
   if (!m) return null
   const scenarioId = m[1] && SCENARIOS[m[1]] ? m[1] : (m[1] ? null : 'azurika')
   if (!scenarioId) return null
-  const valid = new Set(CARDS.map(c => c.id))
+  const valid = new Set(cardsFor(scenarioId).map(c => c.id)) // 시나리오 덱 기준 (교체·분석 카드 포함)
   const ids = m[2].split('.').filter(id => valid.has(id))
   if (ids.length < 1 || ids.length > 4) return null
   if (!INTERVENTIONS.some(iv => iv.id === m[3])) return null

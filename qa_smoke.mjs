@@ -26,7 +26,7 @@ await page.getByText('알겠다, 시작하자').click()
 await page.waitForTimeout(300)
 
 // 카드 3장 선택 (시너지 조합: 라인다운+역습올인+슈퍼서브)
-for (const name of ['라인 다운', '역습 올인', '손흥민 투입']) {
+for (const name of ['라인 다운', '역습 올인', '교체: 손흥민 IN']) {
   await page.getByRole('button', { name: new RegExp(name) }).click()
   await page.waitForTimeout(250)
 }

@@ -45,7 +45,7 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
   const [showGuide, setShowGuide] = useState(() => !localStorage.getItem('hm_seen_guide'))
   const kickedRef = useRef(false)
 
-  const stats = useMemo(() => comboStats(picked), [picked])
+  const stats = useMemo(() => comboStats(picked, sc.id), [picked, sc.id])
   const formation = useMemo(() => formationFromCards(picked), [picked])
 
   // 제한시간 타이머 — 온보딩 가이드 닫은 뒤에 시작 (모의심사 지적 반영), 만료 시 자동 킥오프
@@ -101,10 +101,13 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
           <div className="pitch-box left" /><div className="pitch-box right" />
           {sc.players.map(p => {
             const fp = formation[p.id]
+            // 교체 카드 선택 시 보드에 실제 교체 반영 (OUT 선수 자리에 IN 선수 표시 + 글로우)
+            const subCard = CARDS.find(c => c.sub && c.sub.out === p.id && picked.includes(c.id))
+            const shownName = subCard ? subCard.sub.inName : p.name
             return (
-              <div key={p.id} className={`fdot ${p.pos.toLowerCase()} ${fp.glow ? 'glow' : ''}`}
+              <div key={p.id} className={`fdot ${p.pos.toLowerCase()} ${(fp.glow || subCard) ? 'glow' : ''}`}
                    style={{ left: `${fp.x}%`, top: `${fp.y}%` }}>
-                <span className="fdot-name">{p.name}</span>
+                <span className="fdot-name">{shownName}</span>
               </div>
             )
           })}
@@ -141,7 +144,7 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
           const on = orderIdx >= 0
           const full = !on && picked.length >= SLOT_COUNT
           return (
-            <button key={c.id} className={`card ${on ? 'on' : ''} ${full ? 'dim' : ''}`} onClick={() => toggle(c.id)}>
+            <button key={c.id} className={`card ${c.special ? 'special' : ''} ${on ? 'on' : ''} ${full ? 'dim' : ''}`} onClick={() => toggle(c.id)}>
               {on && <span className="card-order">{['①', '②', '③', '④'][orderIdx]}</span>}
               <div className="card-top"><span className="card-icon">{c.icon}</span><b>{c.name}</b></div>
               <div className="card-desc">{c.desc}</div>

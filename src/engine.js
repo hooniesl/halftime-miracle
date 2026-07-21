@@ -48,16 +48,19 @@ function mulberry32(a) {
   }
 }
 
-export function comboStats(ids) {
+export function comboStats(ids, scenarioId = DEFAULT_SCENARIO) {
+  const deck = cardsFor(scenarioId)
   let atk = 5, def = 5, sta = 6 // 후반 시작 기본치 (전반 열세 반영)
   const notes = []
   for (const id of ids) {
-    const c = CARDS.find(x => x.id === id)
+    const c = deck.find(x => x.id === id)
     if (!c) continue
     atk += c.atk; def += c.def; sta += c.sta
   }
+  // 교체 카드는 시너지 판정 시 슈퍼서브로 취급 (손흥민+전방압박 시너지 등)
+  const normIds = ids.map(id => id.startsWith('sub_') ? 'supersub' : id)
   for (const s of SYNERGY) {
-    if (s.pair.every(p => ids.includes(p))) {
+    if (s.pair.every(p => normIds.includes(p))) {
       if (s.bonus > 0) atk += s.bonus       // 시너지 = 공격 보너스
       else { atk += s.bonus; def += s.bonus } // 충돌 = 공수 동반 감점
       notes.push(s.label)
@@ -89,7 +92,8 @@ const fillNames = (text, sc) => {
   return text.replace(/\{(\w+)\}/g, (_, k) => map[k] || '')
 }
 const goodText = (cardId, minute, sc) => {
-  const g = CARD_SCENES[cardId]?.good
+  const own = cardsFor(sc.id).find(c => c.id === cardId)?.sceneGood
+  const g = own || CARD_SCENES[cardId]?.good
   if (!g) return ''
   return fillNames(Array.isArray(g) ? g[minute % g.length] : g, sc)
 }
@@ -97,10 +101,12 @@ const goodText = (cardId, minute, sc) => {
 // 시나리오별 카드 목록 (이름/설명 오버라이드 적용 — 예: korea의 supersub = '손흥민 투입')
 export function cardsFor(scenarioId) {
   const sc = SCENARIOS[scenarioId] || SCENARIOS[DEFAULT_SCENARIO]
-  return CARDS.map(c => {
+  const removed = new Set(sc.removeCards || [])
+  const base = CARDS.filter(c => !removed.has(c.id)).map(c => {
     const merged = { ...c, ...(sc.cardOverrides[c.id] || {}) }
     return { ...merged, name: fillNames(merged.name, sc), desc: fillNames(merged.desc, sc), risk: fillNames(merged.risk, sc) }
   })
+  return [...(sc.extraCards || []), ...base] // 특별 카드(교체·분석) = 맨 앞, 잘 보이는 자리
 }
 
 // ─── 후반 75분 긴급 지시 (터치라인 개입 — 모의심사 1차 최대 감점 보완) ───
@@ -121,7 +127,8 @@ const COACH_SCENES = {
 export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_SCENARIO) {
   const sc = SCENARIOS[scenarioId] || SCENARIOS[DEFAULT_SCENARIO]
   const ids = [...rawIds].sort() // 순서 무관 완전 결정론 (장면 추출까지)
-  const { atk, def, sta, notes } = comboStats(ids)
+  const { atk, def, sta, notes } = comboStats(ids, sc.id)
+  const hasIntel = ids.includes('intel') // 상대 분석 = 실제 실점 패턴(좌측 크로스→마세코)을 차단
   const iv = INTERVENTIONS.find(x => x.id === interventionId) || INTERVENTIONS[1]
   const rnd = mulberry32(seedFromCards([sc.id, ...ids]))
   const scenes = []
@@ -144,7 +151,7 @@ export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_S
     const pGoalUs = Math.min(0.34, (0.03 + (atk + iAtk) * 0.017) * sc.difficulty.atkCoef + (late ? 0.04 : 0)) * usScale
     const isFateMin = sc.fateMinute === minute
     // 운명의 순간(실제 실점 시각): 실점 위험 2배 — 수비를 짜뒀다면 막고, 아니면 역사가 반복된다
-    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? 2 : 1)) * themScale
+    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? (hasIntel ? 1.2 : 2) : 1)) * themScale
     const r = rnd()
     let cardId = ids[Math.floor(rnd() * ids.length)]
     // 직전 장면과 같은 카드면 다음 카드로 순환 — 연속 복붙 문구 방지 (난수 소비량 불변)
