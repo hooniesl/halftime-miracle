@@ -97,7 +97,7 @@ function ScenarioSelect({ onPick }) {
           {s.realityNote && <span className="sc-real">그날의 결과를 알고 있다면, 바꿀 수도 있다.</span>}
         </button>
       ))}
-      <p className="select-foot">실제 경기 데이터는 공개된 경기 기록(스코어·출전 명단)을 바탕으로 재구성했습니다.</p>
+      <p className="select-foot">실전 시나리오는 2026년 6월 월드컵 조별리그 최종전의 공개 경기 기록(스코어·출전 명단·보도)을 바탕으로 재구성했습니다. 정확한 경기 일자는 출처 간 상충으로 표기하지 않았으며, 선수는 이름·기록만 사용하고 사진·초상은 사용하지 않습니다.</p>
     </div>
   )
 }

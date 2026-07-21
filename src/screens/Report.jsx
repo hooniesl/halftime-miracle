@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { cardsFor } from '../engine.js'
+import { cardsFor, simulate, INTERVENTIONS } from '../engine.js'
 
 const OUTCOME_META = {
   win:  { emoji: '🏆', klass: 'win' },
@@ -49,10 +49,26 @@ export default function Report({ result, sc, cards, history, onRetry, onSelect }
         </div>
       </div>
 
+      <div className="panel">
+        <h3>🔀 만약 그때, 다른 지시였다면</h3>
+        {INTERVENTIONS.map(iv => {
+          const alt = iv.id === result.intervention ? result : simulate(cards, iv.id, sc.id)
+          const mine = iv.id === result.intervention
+          return (
+            <div key={iv.id} className={`whatif-row ${mine ? 'mine' : ''}`}>
+              <span>{iv.icon} {iv.name}</span>
+              <span className="whatif-score">{alt.us} : {alt.them}</span>
+              <span className={`whatif-out ${alt.outcome}`}>{alt.outcome === 'win' ? '승리' : alt.outcome === 'draw' ? (sc.drawIsSuccess ? '32강행' : '무승부') : '패배'}{mine ? ' ← 나의 선택' : ''}</span>
+            </div>
+          )
+        })}
+      </div>
+
       {sc.coachQuote && (
         <div className="panel quote-panel">
           <p className="coach-quote">{sc.coachQuote}</p>
-          <p className="quote-answer">— 당신의 대답: <b>{result.us} : {result.them}</b></p>
+          <p className="quote-answer">그 말의 무게를, 당신도 이제 안다 — 당신의 후반: <b>{result.us} : {result.them}</b></p>
+          <p className="respect-note">이 게임은 누군가를 평가하기 위한 것이 아니라, 그날의 결단이 얼마나 어려웠는지 직접 체험하기 위한 것입니다.</p>
         </div>
       )}
 
