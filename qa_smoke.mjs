@@ -13,6 +13,9 @@ page.on('pageerror', e => errors.push('pageerror: ' + e.message))
 page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()) })
 
 await page.goto(BASE)
+await page.waitForTimeout(600)
+await page.screenshot({ path: `${shots}/0_select.png` })
+await page.getByText('남아공전, 그날의 후반').click() // 🇰🇷 실전 시나리오
 await page.waitForTimeout(3500) // 인트로 타임라인 재생 대기
 await page.screenshot({ path: `${shots}/1_intro.png` })
 
@@ -23,7 +26,7 @@ await page.getByText('알겠다, 시작하자').click()
 await page.waitForTimeout(300)
 
 // 카드 3장 선택 (시너지 조합: 라인다운+역습올인+슈퍼서브)
-for (const name of ['라인 다운', '역습 올인', '슈퍼서브 투입']) {
+for (const name of ['라인 다운', '역습 올인', '손흥민 투입']) {
   await page.getByRole('button', { name: new RegExp(name) }).click()
   await page.waitForTimeout(250)
 }

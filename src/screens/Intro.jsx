@@ -1,38 +1,41 @@
 import React, { useEffect, useState } from 'react'
-import { FIRST_HALF, ENEMY_TEAM, US_TEAM } from '../data.js'
 
-export default function Intro({ onNext }) {
+export default function Intro({ sc, onNext }) {
   const [shown, setShown] = useState(0)
+  const half = sc.firstHalf
 
   useEffect(() => {
-    if (shown >= FIRST_HALF.length) return
+    if (shown >= half.length) return
     const t = setTimeout(() => setShown(s => s + 1), 900)
     return () => clearTimeout(t)
-  }, [shown])
+  }, [shown, half.length])
+
+  const { us, them } = sc.startScore
 
   return (
     <div className="screen intro">
       <div className="scoreboard big">
-        <span className="team us">{US_TEAM.name}</span>
-        <span className="score">0 : 2</span>
-        <span className="team them">{ENEMY_TEAM.name}</span>
+        <span className="team us">{sc.teamName}</span>
+        <span className="score">{us} : {them}</span>
+        <span className="team them">{sc.enemyName}</span>
       </div>
-      <div className="badge">월드컵 16강 · 전반 종료</div>
+      <div className="badge">{sc.id === 'korea' ? '2026 월드컵 A조 최종전 · 전반 종료' : '월드컵 16강 · 전반 종료'}</div>
 
       <div className="timeline">
-        {FIRST_HALF.slice(0, shown).map(e => (
+        {half.slice(0, shown).map(e => (
           <div key={e.minute} className="timeline-item fade-in">
             <span className="minute">{e.minute}'</span> {e.text}
           </div>
         ))}
       </div>
 
-      {shown < FIRST_HALF.length && (
+      {shown < half.length && (
         <button className="btn ghost intro-skip" onClick={onNext}>바로 시작하기 ≫</button>
       )}
-      {shown >= FIRST_HALF.length && (
+      {shown >= half.length && (
         <div className="fade-in intro-cta">
-          <p className="enemy-note">📋 스카우팅 노트: {ENEMY_TEAM.note}</p>
+          {sc.realityNote && <p className="reality-note">🕰️ {sc.realityNote}</p>}
+          <p className="enemy-note">📋 스카우팅 노트: {sc.enemyNote}</p>
           <p className="dramatic">락커룸. 선수들이 당신을 보고 있다.<br />당신에게 <b>3분</b>이 주어진다.</p>
           <button className="btn primary" onClick={onNext}>락커룸 문 열기 →</button>
         </div>

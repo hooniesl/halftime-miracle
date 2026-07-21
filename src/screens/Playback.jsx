@@ -38,7 +38,7 @@ export default function Playback({ result, intervened, onIntervene, onDone }) {
     if (s.type === 'goal_us') acc.us++
     if (s.type === 'goal_them') acc.them++
     return acc
-  }, { us: 0, them: 2 })
+  }, { ...(result.start || { us: 0, them: 2 }) })
   const done = !pausedForChoice && idx >= scenes.length
   const last = visible[visible.length - 1]
 

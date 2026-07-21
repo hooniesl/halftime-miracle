@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CARDS } from '../engine.js'
+import { cardsFor } from '../engine.js'
 
 const OUTCOME_META = {
   win:  { emoji: '🏆', klass: 'win' },
@@ -7,20 +7,21 @@ const OUTCOME_META = {
   loss: { emoji: '😤', klass: 'loss' },
 }
 
-export default function Report({ result, cards, history, onRetry }) {
+export default function Report({ result, sc, cards, history, onRetry, onSelect }) {
   const [copied, setCopied] = useState(false)
   const meta = OUTCOME_META[result.outcome]
+  const CARDS = cardsFor(sc.id)
   const cardObjs = cards.map(id => CARDS.find(c => c.id === id)).filter(Boolean)
 
   const share = async () => {
-    const replayUrl = `${location.origin}${location.pathname}#r=${cards.join('.')}:${result.intervention || 'hold'}`
+    const replayUrl = `${location.origin}${location.pathname}#r=${sc.id}:${cards.join('.')}:${result.intervention || 'hold'}`
     const lines = [
-      `⚽ 하프타임의 기적 — 감독 성적표`,
-      `최종 스코어 ${result.us}:${result.them} (${result.outcome === 'win' ? '대역전승!' : result.outcome === 'draw' ? '동점 사수' : '석패'})`,
+      `⚽ 하프타임의 기적 — ${sc.title}`,
+      `최종 스코어 ${result.us}:${result.them} (${result.outcome === 'win' ? '승리!' : result.outcome === 'draw' ? '무승부' : '패배'})`,
       `감독 평점 ★${result.rating}`,
       `지시: ${cardObjs.map(c => c.icon + c.name).join(' · ')}`,
       `내 경기 다시보기: ${replayUrl}`,
-      `당신이라면 0-2를 뒤집을 수 있습니까?`,
+      sc.id === 'korea' ? `실제 역사는 0-1 패배였다. 당신이라면 바꿀 수 있습니까?` : `당신이라면 0-2를 뒤집을 수 있습니까?`,
     ].join('\n')
     try { await navigator.clipboard.writeText(lines); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch {}
   }
@@ -55,7 +56,7 @@ export default function Report({ result, cards, history, onRetry }) {
             <div key={i} className="history-row">
               <span className={`h-outcome ${h.outcome}`}>{OUTCOME_META[h.outcome]?.emoji}</span>
               <span>{h.us}:{h.them}</span>
-              <span className="h-cards">{h.cards.map(id => CARDS.find(c => c.id === id)?.icon).join('')}</span>
+              <span className="h-cards">{(h.scenario === 'korea' ? '🇰🇷' : '🎮')} {h.cards.map(id => CARDS.find(c => c.id === id)?.icon).join('')}</span>
               <span className="h-rating">★{h.rating}</span>
             </div>
           ))}
@@ -65,6 +66,7 @@ export default function Report({ result, cards, history, onRetry }) {
       <div className="report-foot">
         <button className="btn primary big" onClick={onRetry}>🔄 다른 선택이었다면? (재도전)</button>
         <button className="btn ghost" onClick={share}>{copied ? '✅ 복사됨!' : '📤 감독 성적표 공유'}</button>
+        <button className="btn ghost" onClick={onSelect}>🏟️ 다른 경기 고르기</button>
       </div>
     </div>
   )

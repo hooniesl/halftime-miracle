@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { CARDS, comboStats } from '../engine.js'
-import { US_TEAM } from '../data.js'
+import { cardsFor, comboStats } from '../engine.js'
 import { play } from '../sound.js'
 
 // 기본 4-3-3 배치 (x: 공격 방향 →, y: 세로). 카드 선택이 배치를 실시간으로 움직인다.
@@ -38,8 +37,9 @@ function formationFromCards(picked) {
 const SLOT_COUNT = 4
 const TIME_LIMIT = 180 // 3분
 
-// 카드 선택: 탭/클릭 = 슬롯 토글 (모바일 우선). 드래그 폴리시는 D3.
-export default function LockerRoom({ onKickoff, initial = [] }) {
+// 카드 선택: 탭/클릭 = 슬롯 토글 (모바일 우선)
+export default function LockerRoom({ sc, onKickoff, initial = [] }) {
+  const CARDS = useMemo(() => cardsFor(sc.id), [sc.id])
   const [picked, setPicked] = useState(initial)
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT)
   const [showGuide, setShowGuide] = useState(() => !localStorage.getItem('hm_seen_guide'))
@@ -91,7 +91,7 @@ export default function LockerRoom({ onKickoff, initial = [] }) {
       <div className="locker-head sticky-top">
         <div className={`timer ${timeLeft <= 30 ? 'danger' : ''}`}>⏱ {mm}:{ss}</div>
         <div className="head-hint">지시 {picked.length}/{SLOT_COUNT}</div>
-        <div className="scoreboard small"><span>0 : 2</span></div>
+        <div className="scoreboard small"><span>{sc.startScore.us} : {sc.startScore.them}</span></div>
       </div>
 
       <div className="formation">
@@ -99,7 +99,7 @@ export default function LockerRoom({ onKickoff, initial = [] }) {
         <div className="fpitch">
           <div className="pitch-line center" />
           <div className="pitch-box left" /><div className="pitch-box right" />
-          {US_TEAM.players.map(p => {
+          {sc.players.map(p => {
             const fp = formation[p.id]
             return (
               <div key={p.id} className={`fdot ${p.pos.toLowerCase()} ${fp.glow ? 'glow' : ''}`}

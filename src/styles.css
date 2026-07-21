@@ -22,6 +22,20 @@ body { background: var(--bg); color: var(--text); font-family: 'Pretendard', -ap
 .badge { align-self: center; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-size: 12px; color: var(--dim); }
 .live-dot { font-size: 12px; color: var(--red); font-weight: 700; }
 
+/* 시나리오 선택 */
+.select-head { text-align: center; padding: 26px 0 8px; display: flex; flex-direction: column; gap: 8px; }
+.select-head h1 { font-size: 26px; }
+.select-head p { color: var(--dim); font-size: 14px; line-height: 1.5; }
+.scenario-card { display: flex; flex-direction: column; gap: 6px; text-align: left; background: var(--panel); border: 2px solid var(--line); border-radius: 16px; padding: 18px; color: var(--text); font-family: inherit; cursor: pointer; }
+.scenario-card.korea { border-color: var(--gold); background: linear-gradient(135deg, rgba(244,162,97,.12), var(--panel)); }
+.scenario-card:active { transform: scale(.98); }
+.sc-badge { font-size: 12px; font-weight: 800; color: var(--gold); }
+.sc-title { font-size: 19px; }
+.sc-sub { font-size: 13px; color: var(--dim); }
+.sc-real { font-size: 12.5px; color: var(--gold); margin-top: 4px; }
+.select-foot { margin-top: auto; font-size: 11px; color: var(--dim); text-align: center; line-height: 1.5; }
+.reality-note { font-size: 13px; color: var(--gold); background: rgba(244,162,97,.08); border: 1px solid rgba(244,162,97,.3); border-radius: 10px; padding: 12px; line-height: 1.55; }
+
 /* 인트로 */
 .timeline { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 .timeline-item { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; }
