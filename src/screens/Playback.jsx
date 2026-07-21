@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { INTERVENTIONS } from '../engine.js'
+import { play } from '../sound.js'
 
 // 후반전 하이라이트 재생 — 장면별 순차 공개 + 75' 긴급 지시 개입 + 미니 피치 애니메이션
 export default function Playback({ result, intervened, onIntervene, onDone }) {
@@ -24,6 +25,14 @@ export default function Playback({ result, intervened, onIntervene, onDone }) {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [idx])
 
+  // 사운드 큐: 킥오프 휘슬 / 골 함성 / 75' 정지 휘슬
+  useEffect(() => { play('whistle', 0.5) }, [])
+  useEffect(() => {
+    const s = scenes[idx - 1]
+    if (s?.type === 'goal_us') play('crowd', 0.6)
+  }, [idx, scenes])
+  useEffect(() => { if (pausedForChoice) play('whistle', 0.45) }, [pausedForChoice])
+
   const visible = scenes.slice(0, Math.min(idx, pausedForChoice ? coachIdx : scenes.length))
   const score = visible.reduce((acc, s) => {
     if (s.type === 'goal_us') acc.us++
@@ -32,6 +41,9 @@ export default function Playback({ result, intervened, onIntervene, onDone }) {
   }, { us: 0, them: 2 })
   const done = !pausedForChoice && idx >= scenes.length
   const last = visible[visible.length - 1]
+
+  // 종료 휘슬 (done 선언 이후 참조 — TDZ 주의)
+  useEffect(() => { if (done) play('whistle', 0.5) }, [done])
 
   return (
     <div className="screen playback">
@@ -54,7 +66,7 @@ export default function Playback({ result, intervened, onIntervene, onDone }) {
           <div className="intervene-head">📣 75분 — 터치라인, 당신의 마지막 지시는?</div>
           <div className="intervene-row">
             {INTERVENTIONS.map(iv => (
-              <button key={iv.id} className="intervene-btn" onClick={() => onIntervene(iv.id)}>
+              <button key={iv.id} className="intervene-btn" onClick={() => { play('click', 0.45); onIntervene(iv.id) }}>
                 <span className="iv-icon">{iv.icon}</span>
                 <b>{iv.name}</b>
                 <span className="iv-desc">{iv.desc}</span>

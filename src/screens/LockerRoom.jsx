@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { CARDS, comboStats } from '../engine.js'
 import { US_TEAM } from '../data.js'
+import { play } from '../sound.js'
 
 // 기본 4-3-3 배치 (x: 공격 방향 →, y: 세로). 카드 선택이 배치를 실시간으로 움직인다.
 const BASE_POS = {
@@ -61,6 +62,7 @@ export default function LockerRoom({ onKickoff, initial = [] }) {
   }, [timeLeft, picked, onKickoff])
 
   const toggle = (id) => {
+    play('click', 0.45)
     setPicked(p => p.includes(id) ? p.filter(x => x !== id) : (p.length >= SLOT_COUNT ? p : [...p, id]))
   }
 

@@ -4,6 +4,7 @@ import LockerRoom from './screens/LockerRoom.jsx'
 import Playback from './screens/Playback.jsx'
 import Report from './screens/Report.jsx'
 import { simulate } from './engine.js'
+import { soundOn, toggleSound } from './sound.js'
 
 // 공유 리플레이 링크: #r=<card.card.card>:<intervention> — 열면 그 경기 하이라이트가 바로 재생
 // 존재하는 카드/개입만 통과 — 조작된 해시는 조용히 무시하고 인트로로 (모의심사 2차 지적 가드)
@@ -55,8 +56,13 @@ export default function App() {
 
   const retry = useCallback(() => { setResult(null); setPhase('locker') }, [])
 
+  const [sound, setSound] = useState(soundOn())
+
   return (
     <div className="app">
+      <button className="sound-toggle" onClick={() => setSound(toggleSound())} aria-label="사운드 켜기/끄기">
+        {sound ? '🔊' : '🔇'}
+      </button>
       {phase === 'intro' && <Intro onNext={() => setPhase('locker')} />}
       {phase === 'locker' && <LockerRoom onKickoff={kickoff} initial={pickedCards} />}
       {phase === 'playback' && result && <Playback result={result} intervened={intervened} onIntervene={intervene} onDone={toReport} />}
