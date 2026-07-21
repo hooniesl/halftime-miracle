@@ -16,7 +16,7 @@ await page.goto(BASE)
 await page.waitForTimeout(3500) // 인트로 타임라인 재생 대기
 await page.screenshot({ path: `${shots}/1_intro.png` })
 
-await page.getByText('라커룸 문을 연다').click()
+await page.getByText('락커룸 문 열기').click()
 await page.waitForTimeout(400)
 await page.screenshot({ path: `${shots}/2_guide.png` })
 await page.getByText('알겠다, 시작하자').click()

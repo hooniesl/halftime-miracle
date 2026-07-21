@@ -33,8 +33,8 @@ export default function Intro({ onNext }) {
       {shown >= FIRST_HALF.length && (
         <div className="fade-in intro-cta">
           <p className="enemy-note">📋 스카우팅 노트: {ENEMY_TEAM.note}</p>
-          <p className="dramatic">라커룸. 선수들이 당신을 보고 있다.<br />당신에게 <b>3분</b>이 주어진다.</p>
-          <button className="btn primary" onClick={onNext}>라커룸 문을 연다 →</button>
+          <p className="dramatic">락커룸. 선수들이 당신을 보고 있다.<br />당신에게 <b>3분</b>이 주어진다.</p>
+          <button className="btn primary" onClick={onNext}>락커룸 문 열기 →</button>
         </div>
       )}
     </div>

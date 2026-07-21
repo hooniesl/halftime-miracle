@@ -34,5 +34,5 @@ export const ENEMY_TEAM = {
 export const FIRST_HALF = [
   { minute: 12, text: '역습 한 방. 수비 라인 뒷공간이 뚫리며 선제 실점. 0-1.' },
   { minute: 34, text: '중원에서 볼을 뺏기자 곧바로 두 번째 역습. 0-2.' },
-  { minute: 45, text: '전반 종료. 슈팅 수 9-4로 앞서고도 스코어는 0-2. 라커룸으로.' },
+  { minute: 45, text: '전반 종료. 슈팅 수 9-4로 앞서고도 스코어는 0-2. 락커룸으로.' },
 ]
