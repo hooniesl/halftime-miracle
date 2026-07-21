@@ -6,11 +6,15 @@ import Report from './screens/Report.jsx'
 import { simulate } from './engine.js'
 
 // 공유 리플레이 링크: #r=<card.card.card>:<intervention> — 열면 그 경기 하이라이트가 바로 재생
+// 존재하는 카드/개입만 통과 — 조작된 해시는 조용히 무시하고 인트로로 (모의심사 2차 지적 가드)
+import { CARDS, INTERVENTIONS } from './engine.js'
 function parseReplayHash() {
   const m = (window.location.hash || '').match(/^#r=([a-z_.]+):([a-z]+)$/)
   if (!m) return null
-  const ids = m[1].split('.').filter(Boolean)
+  const valid = new Set(CARDS.map(c => c.id))
+  const ids = m[1].split('.').filter(id => valid.has(id))
   if (ids.length < 1 || ids.length > 4) return null
+  if (!INTERVENTIONS.some(iv => iv.id === m[2])) return null
   return { ids, iv: m[2] }
 }
 
