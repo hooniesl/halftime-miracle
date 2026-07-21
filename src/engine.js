@@ -128,7 +128,11 @@ export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_S
   const sc = SCENARIOS[scenarioId] || SCENARIOS[DEFAULT_SCENARIO]
   const ids = [...rawIds].sort() // 순서 무관 완전 결정론 (장면 추출까지)
   const { atk, def, sta, notes } = comboStats(ids, sc.id)
-  const hasIntel = ids.includes('intel') // 상대 분석 = 실제 실점 패턴(좌측 크로스→마세코)을 차단
+  // fateGuard: 실점 패턴(좌측 크로스→마세코)에 직접 대응하는 카드가 운명의 순간 위험을 낮춘다
+  const deck = cardsFor(sc.id)
+  let fateMult = 2
+  for (const id of ids) { const g = deck.find(c => c.id === id)?.fateGuard; if (g) fateMult *= g }
+  fateMult = Math.max(0.9, fateMult)
   const iv = INTERVENTIONS.find(x => x.id === interventionId) || INTERVENTIONS[1]
   const rnd = mulberry32(seedFromCards([sc.id, ...ids]))
   const scenes = []
@@ -151,7 +155,7 @@ export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_S
     const pGoalUs = Math.min(0.34, (0.03 + (atk + iAtk) * 0.017) * sc.difficulty.atkCoef + (late ? 0.04 : 0)) * usScale
     const isFateMin = sc.fateMinute === minute
     // 운명의 순간(실제 실점 시각): 실점 위험 2배 — 수비를 짜뒀다면 막고, 아니면 역사가 반복된다
-    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? (hasIntel ? 1.2 : 2) : 1)) * themScale
+    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? fateMult : 1)) * themScale
     const r = rnd()
     let cardId = ids[Math.floor(rnd() * ids.length)]
     // 직전 장면과 같은 카드면 다음 카드로 순환 — 연속 복붙 문구 방지 (난수 소비량 불변)

@@ -11,8 +11,8 @@ const BASE_POS = {
 }
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
-function formationFromCards(picked) {
-  const pos = Object.fromEntries(Object.entries(BASE_POS).map(([k, p]) => [k, { ...p, glow: false }]))
+function formationFromCards(picked, basePos) {
+  const pos = Object.fromEntries(Object.entries(basePos || BASE_POS).map(([k, p]) => [k, { ...p, glow: false }]))
   const has = id => picked.includes(id)
   const move = (ids, dx = 0, dy = 0) => ids.forEach(id => { pos[id].x += dx; pos[id].y += dy })
   if (has('press'))    { move(['fw1','fw2','fw3'], 9); move(['mf1','mf2','mf3'], 5) }
@@ -46,7 +46,7 @@ export default function LockerRoom({ sc, onKickoff, initial = [] }) {
   const kickedRef = useRef(false)
 
   const stats = useMemo(() => comboStats(picked, sc.id), [picked, sc.id])
-  const formation = useMemo(() => formationFromCards(picked), [picked])
+  const formation = useMemo(() => formationFromCards(picked, sc.basePos), [picked, sc.basePos])
 
   // 제한시간 타이머 — 온보딩 가이드 닫은 뒤에 시작 (모의심사 지적 반영), 만료 시 자동 킥오프
   useEffect(() => {
