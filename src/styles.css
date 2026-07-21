@@ -21,6 +21,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Pretendard', -ap
 .scoreboard.small { font-size: 18px; font-weight: 800; color: var(--dim); }
 .badge { align-self: center; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-size: 12px; color: var(--dim); }
 .live-dot { font-size: 12px; color: var(--red); font-weight: 700; }
+.live-row { text-align: center; margin-top: -6px; }
 
 /* 시나리오 선택 */
 .select-head { text-align: center; padding: 26px 0 8px; display: flex; flex-direction: column; gap: 8px; }

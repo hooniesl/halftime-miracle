@@ -15,9 +15,11 @@ export const SCENARIOS = {
     subtitle: '2026 월드컵 A조 최종전 — 실제 데이터',
     teamName: '대한민국',
     enemyName: '남아프리카공화국',
+    shortUs: '대한민국', shortThem: '남아공',
+    drawIsSuccess: true, // 실제 스테이크: 무승부 이상 = 32강 진출
     startScore: { us: 0, them: 2 - 2 }, // 하프타임 실제 스코어 0-0
     // 밀집수비 상대 — 득점 난이도 소폭 상승, 역습 실점 위험 소폭 상승
-    difficulty: { atkCoef: 0.76, themBonus: 0.03 },
+    difficulty: { atkCoef: 0.76, themBonus: 0.03, usScale: 0.52, themScale: 0.82 },
     fateMinute: 64, // 실제 실점 시각(후반 18분≈63~64') — 운명의 순간
     fateTexts: {
       goal_them: "64' 💔 역사가 반복된다… 모레미의 낮은 크로스, 마세코가 그날처럼 파고든다 — 실점",
@@ -25,7 +27,7 @@ export const SCENARIOS = {
     },
     outro: {
       win: '역사를 다시 썼다! 그날 못 넘은 산을 당신이 넘었다.',
-      draw: '무승부 — 실제(0-1 패배)보다는 나은 역사. 하지만 아직 부족하다.',
+      draw: '무승부 — 그리고 그거면 충분했다. 그날 필요했던 결과, 32강 진출이다!',
       loss: '역사는 반복됐다… 하지만 당신은 그날의 벤치보다 먼저 움직였다.',
     },
     realityNote: '실제 역사: 비기기만 해도 32강이었던 이 경기, 대한민국은 후반 18분 실점으로 0-1 패배 — 조별리그에서 탈락했고 감독은 물러났다. 손흥민은 월드컵 커리어 처음으로 벤치에서 하프타임을 맞았다.',
@@ -67,6 +69,8 @@ export const SCENARIOS = {
     subtitle: '가상 시나리오 — 감독 훈련장',
     teamName: '코리아 유나이티드',
     enemyName: '아즈리카 FC',
+    shortUs: '코리아Utd', shortThem: '아즈리카',
+    drawIsSuccess: false,
     startScore: { us: 0, them: 2 },
     difficulty: { atkCoef: 1, themBonus: 0 },
     fateMinute: null,

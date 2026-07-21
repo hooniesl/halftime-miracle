@@ -48,9 +48,11 @@ export default function Playback({ result, intervened, onIntervene, onDone }) {
   return (
     <div className="screen playback">
       <div className="scoreboard big live">
+        <span className="team us">{result.shortUs || '우리팀'}</span>
         <span className="score">{score.us} : {score.them}</span>
-        <span className="live-dot">● LIVE 후반전</span>
+        <span className="team them">{result.shortThem || '상대팀'}</span>
       </div>
+      <div className="live-row"><span className="live-dot">● LIVE 후반전</span></div>
 
       <Pitch scene={last} />
 

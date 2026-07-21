@@ -138,10 +138,13 @@ export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_S
     const iAtk = minute >= 76 ? iv.atk : 0
     const iDef = minute >= 76 ? iv.def : 0
     const fatigue = late ? Math.max(0, (7 - sta)) * 0.045 : 0
-    const pGoalUs = Math.min(0.34, (0.03 + (atk + iAtk) * 0.017) * sc.difficulty.atkCoef + (late ? 0.04 : 0))
+    // 시나리오별 득점 스케일 — 실경기 데이터 기준 보정(korea: 후반 팀당 평균 ~1골 안팎이 실축구)
+    const usScale = sc.difficulty.usScale ?? 1
+    const themScale = sc.difficulty.themScale ?? 1
+    const pGoalUs = Math.min(0.34, (0.03 + (atk + iAtk) * 0.017) * sc.difficulty.atkCoef + (late ? 0.04 : 0)) * usScale
     const isFateMin = sc.fateMinute === minute
     // 운명의 순간(실제 실점 시각): 실점 위험 2배 — 수비를 짜뒀다면 막고, 아니면 역사가 반복된다
-    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? 2 : 1))
+    const pGoalThem = Math.min(0.5, (Math.max(0.03, 0.15 - (def + iDef) * 0.011) + fatigue + sc.difficulty.themBonus) * (isFateMin ? 2 : 1)) * themScale
     const r = rnd()
     let cardId = ids[Math.floor(rnd() * ids.length)]
     // 직전 장면과 같은 카드면 다음 카드로 순환 — 연속 복붙 문구 방지 (난수 소비량 불변)
@@ -178,8 +181,8 @@ export function simulate(rawIds, interventionId = 'hold', scenarioId = DEFAULT_S
 
   // 감독 평점 (10점 만점): 결과 + 시너지 + 카드 다양성
   const synergyScore = notes.filter(n => n.startsWith('⚡')).length - notes.filter(n => n.startsWith('💥')).length
-  let rating = outcome === 'win' ? 8.5 : outcome === 'draw' ? 6.5 : 4.5
+  let rating = outcome === 'win' ? 8.5 : outcome === 'draw' ? (sc.drawIsSuccess ? 8.0 : 6.5) : 4.5
   rating = Math.max(1, Math.min(10, rating + synergyScore * 0.5 + (us >= 2 ? 0.5 : 0)))
 
-  return { scenes, us, them, outcome, headline, rating: rating.toFixed(1), stats: { atk, def, sta }, notes, intervention: iv.id, scenario: sc.id, start: sc.startScore }
+  return { scenes, us, them, outcome, headline, rating: rating.toFixed(1), stats: { atk, def, sta }, notes, intervention: iv.id, scenario: sc.id, start: sc.startScore, shortUs: sc.shortUs, shortThem: sc.shortThem }
 }
